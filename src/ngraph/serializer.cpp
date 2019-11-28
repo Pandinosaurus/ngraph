@@ -4175,6 +4175,12 @@ json JSONSerializer::serialize_node(const Node& n)
         }
         break;
     }
+    case OP_TYPEID::Stack:
+    {
+        auto tmp = static_cast<const op::Stack*>(&n);
+        node["axis"] = tmp->get_concatenation_axis();
+        break;
+    }
     case OP_TYPEID::Sum: { break;
     }
     case OP_TYPEID::ReduceSum_v1:
@@ -4183,20 +4189,10 @@ json JSONSerializer::serialize_node(const Node& n)
         node["keep_dims"] = tmp->get_keep_dims();
         break;
     }
-<<<<<<< 8f9992895165a064306d9395e7395b49185bbc43
     case OP_TYPEID::Softmax: { break;
     }
 
     case OP_TYPEID::Softmax_v1:
-=======
-    case OP_TYPEID::Stack:
-    {
-        auto tmp = static_cast<const op::Stack*>(&n);
-        node["axis"] = tmp->get_concatenation_axis();
-        break;
-    }
-    case OP_TYPEID::Softmax:
->>>>>>> The stack operator support for a engine:
     {
         auto tmp = static_cast<const op::v1::Softmax*>(&n);
         node["softmax_axis"] = tmp->get_axis();
