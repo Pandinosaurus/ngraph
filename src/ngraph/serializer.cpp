@@ -2448,6 +2448,12 @@ shared_ptr<Node> JSONDeserializer::deserialize_node(json node_js)
             node = make_shared<op::Select>(args[0], args[1], args[2]);
             break;
         }
+        case OP_TYPEID::Stack:
+        {
+            auto axis = node_js.at("axis").get<size_t>();
+            node = make_shared<op::Stack>(static_cast<OutputVector>(args), axis);
+            break;
+        }
         case OP_TYPEID::Selu:
         {
             node = make_shared<op::Selu>(args[0], args[1], args[2]);
@@ -4177,10 +4183,20 @@ json JSONSerializer::serialize_node(const Node& n)
         node["keep_dims"] = tmp->get_keep_dims();
         break;
     }
+<<<<<<< 8f9992895165a064306d9395e7395b49185bbc43
     case OP_TYPEID::Softmax: { break;
     }
 
     case OP_TYPEID::Softmax_v1:
+=======
+    case OP_TYPEID::Stack:
+    {
+        auto tmp = static_cast<const op::Stack*>(&n);
+        node["axis"] = tmp->get_concatenation_axis();
+        break;
+    }
+    case OP_TYPEID::Softmax:
+>>>>>>> The stack operator support for a engine:
     {
         auto tmp = static_cast<const op::v1::Softmax*>(&n);
         node["softmax_axis"] = tmp->get_axis();
