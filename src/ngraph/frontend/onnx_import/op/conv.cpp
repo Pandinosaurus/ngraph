@@ -18,12 +18,14 @@
 #include <memory>
 #include <vector>
 
+#include "ngraph/op/fused/group_conv.hpp"
 #include "ngraph/builder/reshape.hpp"
 #include "ngraph/frontend/onnx_import/exceptions.hpp"
 #include "ngraph/frontend/onnx_import/op/conv.hpp"
 #include "ngraph/frontend/onnx_import/utils/convpool.hpp"
 #include "ngraph/op/add.hpp"
 #include "ngraph/op/broadcast.hpp"
+#include "ngraph/op/get_output_element.hpp"
 #include "ngraph/op/concat.hpp"
 #include "ngraph/op/constant.hpp"
 #include "ngraph/op/convolution.hpp"
@@ -54,7 +56,7 @@ namespace ngraph
                     {
                         if (groups > 1)
                         {
-                            auto filters_shape = filters->get_shape();
+                            /*auto filters_shape = filters->get_shape();
                             filters_shape.at(0) = filters_shape.at(0) / groups;
                             filters_shape.insert(filters_shape.begin(), groups);
 
@@ -68,7 +70,19 @@ namespace ngraph
                                 padding_below,
                                 padding_above,
                                 dilations,
-                                auto_pad);
+                                auto_pad);*/
+                            return std::make_shared<ngraph::op::GetOutputElement>(
+                                std::make_shared<ngraph::op::GroupConvolution>(
+                                    data,
+                                    filters,
+                                    strides,
+                                    dilations,
+                                    padding_below,
+                                    padding_above,
+                                    Strides(strides.size(), 1),
+                                    groups,
+                                    auto_pad),
+                                0);
                         }
                         else
                         {
